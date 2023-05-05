@@ -19,4 +19,5 @@ big_lst = [
     82
 ]
 
+
 print(cherdak(big_lst))
