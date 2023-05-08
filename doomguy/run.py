@@ -1,14 +1,17 @@
 from lib import *
 from time import sleep
 
-my_map = Map()
-# print(my_map.show_box())
-# print(my_map.render())
-
+map_1 = Map(20)
+map_2 = Map(10)
+game = Game()
+game.current_map = map_1
+unit_1 = Unit(name="Alan", x=1, y=1, currrent_map=map_1)
+unit_2 = Unit(name="Bob", x=2, y=2, currrent_map=map_1)
+unit_3 = Unit(name="Doomguy", x=4, y=5, currrent_map=map_1)
 
 while True:
-    my_map.render()
+    map_1.render()
     command = input()
     if command == "w":
-        my_map.move_up()
+        unit_3.move_up()
     sleep(1)

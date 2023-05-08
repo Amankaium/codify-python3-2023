@@ -1,10 +1,22 @@
+class Game:
+    current_map = None
+    # def __init__(self):
+        # self.start_game()
+
+
+    def start_game(self):
+        self.current_map = Map(20)
+
+
 class Map:
+    units = []
+
     def __init__(self, size=20):
         self.height = int(size / 2)
         self.width = size * 2
         self.create_map()
         self.create_box()
-        self.start_game()
+        # self.start_game()
 
     def create_box(self):
         box = []
@@ -40,12 +52,24 @@ class Map:
             print(f"#{' ' * (self.width - 2)}#")
         print("#" * self.width)
 
-    def start_game(self):
-        self.x = round(self.width / 2)
-        self.y = round(self.height / 2)
-        self.box[self.y][self.x] = "O"
+    def add_unit(self, unit_object):
+        self.units.append(unit_object)
+        y = unit_object.y
+        x = unit_object.x
+        self.box[y][x] = unit_object.short_name
+
+
+class Unit:
+    def __init__(self, **kwargs):  # пренадлежность
+        # name, x, y, current_map is required
+        self.name = kwargs["name"]
+        self.short_name = kwargs["name"].upper()[0]
+        self.x = kwargs["x"]
+        self.y = kwargs["y"]
+        self.current_map = kwargs["currrent_map"]
+        self.current_map.add_unit(self)
 
     def move_up(self):
-        self.box[self.y][self.x] = " "
+        self.current_map.box[self.y][self.x] = " "
         self.y -= 1
-        self.box[self.y][self.x] = "O"
+        self.current_map.box[self.y][self.x] = self.short_name
