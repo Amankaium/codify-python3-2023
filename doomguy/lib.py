@@ -95,14 +95,20 @@ class Player(Unit):
 
 
 class Snake(Player):
-    def move(self, button):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.form = [[self.y, self.x], [self.y, self.x+1], [self.y, self.x+2]]
+
+    # form = ['P', 'P', 'P']
+
+    def move_right(self):
         fruits = []
         for unit in self.current_map.units:
             if isinstance(unit, Fruit):
                 fruits.append(unit)
-        if button == "d":
-            next_x = self.x + 1
-            next_y = self.y
+
+        next_x = self.x + 1
+        next_y = self.y
         # TODO
 
         eat = False
@@ -110,14 +116,37 @@ class Snake(Player):
             if fruit.x == next_x and fruit.y == next_y:
                 eat = True
 
-        if eat:
-            ln = len(self.short_name)
-            self.short_name = self.name.upper()[:ln+1]
-        else:
-            super().move(button)
+        if not eat:
+            self.current_map.box[self.y][self.x] = " "
+            self.x += 1
+            del self.form[0]
+        self.form.append([self.y, self.x+len(self.form)-1])
+        tail_x = self.form[0][1]
+        tail_y = self.form[0][0]
+        self.current_map.box[tail_y][tail_x] = self
+        print(eat, self.form)
 
 
-
+    # def move(self, button):
+    #     fruits = []
+    #     for unit in self.current_map.units:
+    #         if isinstance(unit, Fruit):
+    #             fruits.append(unit)
+    #     if button == "d":
+    #         next_x = self.x + 1
+    #         next_y = self.y
+    #     # TODO
+    #
+    #     eat = False
+    #     for fruit in fruits:
+    #         if fruit.x == next_x and fruit.y == next_y:
+    #             eat = True
+    #
+    #     if eat:
+    #         ln = len(self.short_name)
+    #         self.short_name = self.name.upper()[:ln+1]
+    #     else:
+    #         super().move(button)
 
 
 class Bot(Unit):
@@ -128,5 +157,21 @@ class Bot(Unit):
         elif num == 2:
             self.move_right()
 
+
 class Fruit(Unit):
     weight = 1
+
+
+class SnakeMap(Map):
+    def render(self):
+        for row in self.box:
+            continue_counter = 0
+            for pixel in row:
+                if isinstance(pixel, Snake):
+                    continue_counter = len(pixel.form)
+                if continue_counter:
+                    print("P", end='')
+                    continue_counter -= 1
+                    continue
+                print(pixel, end="")
+            print()
