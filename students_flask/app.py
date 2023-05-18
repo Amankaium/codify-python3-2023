@@ -1,12 +1,19 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from openpyxl import load_workbook  # библиотека для работы с excel
 
-first_site = Flask(__name__)
+app = Flask(__name__)
 
 
-@first_site.route('/')
+@app.route('/')
 def hello_world():
     return """
+        <nav>
+            <ul>
+                <li><a href="/">Домой</a></li>
+                <li><a href="/my-code">Мой код</a></li>
+                <li><a href="/add">Добавить студента</a></li>
+            </ul>
+        </nav>
         <div>
             Hello python-3 2023!
         </div>
@@ -16,12 +23,12 @@ def hello_world():
     """
 
 
-@first_site.route('/my-code')
+@app.route('/my-code')
 def my_render():
     return render_template('index.html')
 
 
-@first_site.route('/students')
+@app.route('/students')
 def students():
     students_list = []
     my_file = load_workbook("python_students.xlsx")  # открываем файл через его путь
@@ -35,7 +42,7 @@ def students():
     return result
 
 
-@first_site.route('/marks')
+@app.route('/marks')
 def marks():
     excel_file = load_workbook('python_students.xlsx')
     page = excel_file["Лист1"]
@@ -49,5 +56,21 @@ def marks():
     return result
 
 
+@app.route('/add', methods=["GET", "POST"])
+def add_student():
+    data = request.form  # dictionary
+    # print(data)
+    if data:
+        new_student = data["student_name"]
+        mark_1 = int(data["mark_1"])
+        mark_2 = int(data["mark_2"])
+        excel_file = load_workbook('python_students.xlsx')
+        page = excel_file["Лист1"]
+        page.append([new_student, mark_1, mark_2])
+        excel_file.save('python_students.xlsx')
+        return f"Вы добавили {new_student}!"
+    return render_template('create_student.html')
+
+
 if __name__ == '__main__':
-    first_site.run()
+    app.run()

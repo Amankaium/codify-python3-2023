@@ -2,9 +2,28 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Title</title>
+        <title>SS - Добавить студента</title>
     </head>
     <body>
-
+        <nav>
+            <ul>
+                <li><a href="/">Домой</a></li>
+                <li><a href="/my-code">Мой код</a></li>
+                <li><a href="/add">Добавить студента</a></li>
+            </ul>
+        </nav>
+        <h1>Добавить студента</h1>
+        <form method="POST">
+            <input
+                    type="text"
+                    name="student_name"
+            />
+            <hr>
+            <input type="number" name="mark_1">
+            <hr>
+            <input type="number" name="mark_2">
+            <hr>
+            <button>Добавить</button>
+        </form>
     </body>
 </html>
