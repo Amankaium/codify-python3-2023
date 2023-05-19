@@ -72,5 +72,25 @@ def add_student():
     return render_template('create_student.html')
 
 
+@app.route("/change", methods=["GET", "POST"])
+def change():
+    data = request.form
+    if request.method == 'POST':
+        page_row_number = data["row_number"]
+        student_name = data["new_name"]
+        first = data["mark_1"]
+        second = data["mark_2"]
+        file_name = "python_students.xlsx"
+        excel_file = load_workbook(file_name)
+        page = excel_file["Лист1"]
+        page[f"A{page_row_number}"] = student_name
+        page["B" + page_row_number] = first
+        page[f"C{page_row_number}"] = second
+        excel_file.save(file_name)
+        return f"Строка номер {page_row_number} изменена на '{student_name} - {first} - {second}'"
+
+    return render_template("change.html")
+
+
 if __name__ == '__main__':
     app.run()
