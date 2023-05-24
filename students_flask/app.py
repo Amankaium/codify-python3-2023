@@ -74,8 +74,8 @@ def add_student():
 
 @app.route("/change", methods=["GET", "POST"])
 def change():
-    data = request.form
     if request.method == 'POST':
+        data = request.form
         page_row_number = data["row_number"]
         student_name = data["new_name"]
         first = data["mark_1"]
