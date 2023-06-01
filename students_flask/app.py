@@ -1,7 +1,41 @@
 from flask import Flask, render_template, request
 from openpyxl import load_workbook  # библиотека для работы с excel
+from flask_sqlalchemy import SQLAlchemy  # библиотека для работы с БД
+from random import randint
 
+db = SQLAlchemy()
 app = Flask(__name__)
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
+db.init_app(app)
+
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String, unique=True, nullable=False)
+    email = db.Column(db.String)
+
+
+with app.app_context():
+    db.create_all()
+
+@app.route("/create-user")
+def user_create():
+    num = randint(1, 10000)  # генерируется случайное число от 1 до 10000
+    user = User(
+        username=f"user{num}", # user472 , user4235
+    ) # создаётся объект класса User
+    db.session.add(user)  # INSERT INTO
+    db.session.commit()  # COMMIT (END)
+    return "Пользователь создан"
+
+
+@app.route('/database')
+def db_function():
+    users = db.session.execute(db.select(User).order_by(User.username)).scalars()  # SELECT
+    result = ''  # формируем список логинов пользователей
+    for user in users:
+        result += f"<div>{user.username}</div>"
+    return f"{result}"
 
 
 @app.route('/')
