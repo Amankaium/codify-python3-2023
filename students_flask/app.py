@@ -12,7 +12,10 @@ db.init_app(app)
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, unique=True, nullable=False)
+    second_name = db.Column(db.String, nullable=True)
+    year = db.Column(db.Integer, nullable=True)
     email = db.Column(db.String)
+    is_active = db.Column(db.Boolean, default=False, nullable=False)
 
 
 with app.app_context():
@@ -22,7 +25,9 @@ with app.app_context():
 def user_create():
     num = randint(1, 10000)  # генерируется случайное число от 1 до 10000
     user = User(
-        username=f"user{num}", # user472 , user4235
+        username=f"user{num}",  # user472 , user4235
+        second_name=f'Johnson{num}',  # Johnson472, Johnson4235
+        year=randint(1985, 2010)
     ) # создаётся объект класса User
     db.session.add(user)  # INSERT INTO
     db.session.commit()  # COMMIT (END)
@@ -34,7 +39,7 @@ def db_function():
     users = db.session.execute(db.select(User).order_by(User.username)).scalars()  # SELECT
     result = ''  # формируем список логинов пользователей
     for user in users:
-        result += f"<div>{user.username}</div>"
+        result += f"<div>{user.username} - {user.second_name} - {user.year} - {user.is_active}</div>"
     return f"{result}"
 
 
