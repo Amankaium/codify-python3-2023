@@ -5,11 +5,12 @@ from random import randint
 
 db = SQLAlchemy()
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
+# app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:postgres@localhost:5432/user_db"
 db.init_app(app)
 
 
-class User(db.Model):
+class UserTable(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, unique=True, nullable=False)
     second_name = db.Column(db.String, nullable=True)
@@ -21,10 +22,30 @@ class User(db.Model):
 with app.app_context():
     db.create_all()
 
+
+@app.route('/user-form', methods=['GET', 'POST'])
+def user_add_database():
+    if request.method == "POST":
+        data = request.form  # словарь
+        print(data)
+        is_active = data.get('is_active') == "on"
+        user = UserTable(
+            username=data["username"],
+            second_name=data["second_name"],
+            year=data["year"],
+            email=data["email"],
+            is_active=is_active
+        )
+        db.session.add(user)  # INSERT INTO
+        db.session.commit()  # COMMIT (END)
+        return "Пользователь создан"
+    return render_template('user_form.html')
+
+
 @app.route("/create-user")
 def user_create():
     num = randint(1, 10000)  # генерируется случайное число от 1 до 10000
-    user = User(
+    user = UserTable(
         username=f"user{num}",  # user472 , user4235
         second_name=f'Johnson{num}',  # Johnson472, Johnson4235
         year=randint(1985, 2010)
@@ -36,7 +57,7 @@ def user_create():
 
 @app.route('/database')
 def db_function():
-    users = db.session.execute(db.select(User).order_by(User.username)).scalars()  # SELECT
+    users = db.session.execute(db.select(UserTable).order_by(UserTable.username)).scalars()  # SELECT
     result = ''  # формируем список логинов пользователей
     for user in users:
         result += f"<div>{user.username} - {user.second_name} - {user.year} - {user.is_active}</div>"
