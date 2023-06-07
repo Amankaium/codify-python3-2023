@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+  <h1>Информация о машине с id равным {{ car.id }}</h1>
+    <div>Название: {{ car.name }}</div>
+    <div>Цена: {{ car.price }}</div>
+    <div>Год: {{ car.year }}</div>
+    <div>Продан: {{ car.is_sold }}</div>
+  <a href="/car-edit/{{ car.id }}">Изменить</a>
+</body>
+</html>

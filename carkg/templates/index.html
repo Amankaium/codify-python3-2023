@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>Магазин машин</h1>
+    {% for car in cars %}
+        <h2>
+            <a href="/car/{{ car.id }}">
+                {{ car.name }}
+            </a>
+            - {{ car.price }}
+        </h2>
+    {% endfor %}
+</body>
+</html>

@@ -1,0 +1,24 @@
+cd codify-python3 # ваша главная папка
+mkdir carkg
+cd carkg
+python -m venv venv
+call venv\Scripts\activate
+pip freeze # должно пусто
+pip install flask
+pip install Flask-SQLAlchemy
+pip install psycopg2
+pip freeze > requirements.txt
+pip install -r requirements.txt
+
+# прописываем код в app.py
+
+# создаём БД (в SQL Shell):
+CREATE DATABASE car_db;
+\c car_db
+
+# запускаем flask server
+flask run
+# проверяем в БД
+SELECT * FROM Car;
+INSERT INTO Car (name, price) VALUES ('Subaru OutBack', 9000), ('BMW X7', 100000), ('Honda Stream', 8000);
+SELECT * FROM Car;
