@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
+import psycopg2
 
 
 app = Flask(__name__)
@@ -42,8 +43,37 @@ def car_edit(id):
         car.year = int(data["year"])
         db.session.commit()
 
+
     car = db.get_or_404(Car, id)  # SELECT\
     return render_template('car_edit.html', car=car)
+
+
+@app.route('/car-add/', methods=['GET', 'POST'])
+def car_add():
+    if request.method == "POST":
+        data = request.form
+        car = Car(
+            name=data["name"],
+            price=int(data["price"]),
+            year=int(data["year"])
+        )
+        db.session.add(car)
+        db.session.commit()
+        return redirect('/')
+
+    return render_template('car_add.html')
+
+
+@app.route('/search', methods=['POST'])
+def search():
+    keyword = request.form['word']
+    conn = psycopg2.connect("dbname=car_db user=postgres password=postgres")
+    cur = conn.cursor()
+    cur.execute(f"SELECT * FROM Car WHERE name LIKE '%{keyword}%'")
+    print(keyword)
+    # cars = cur.fetchall()
+    # return render_template('search_result.html', cars=cars)
+    return 'done'
 
 if __name__ == '__main__':
     app.run()

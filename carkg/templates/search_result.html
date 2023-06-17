@@ -16,10 +16,10 @@
     <h1>Магазин машин</h1>
     {% for car in cars %}
         <h2>
-            <a href="/car/{{ car.id }}">
-                {{ car.name }}
+            <a href="/car/{{ car.0 }}">
+                {{ car.1 }}
             </a>
-            - {{ car.price }}
+            - {{ car.3 }}
         </h2>
     {% endfor %}
 </body>
